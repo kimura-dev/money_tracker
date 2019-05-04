@@ -2,7 +2,42 @@
 //// THE MODULE PATTERN
 
 var budgetController = (function(){
- 
+
+  // Creating function constructors
+  var Expense = function(id, description, value){
+    this.id = id,
+    this.description = description,
+    this.value = value
+  };
+
+  // Income Constructor
+  var Income = function(id, description, value){
+    this.id = id,
+    this.description = description,
+    this.value = value
+  };
+
+  // var allExpenses = [];
+  // var allIncomes = [];
+  // var totalExpenses = [];
+
+  // var data = {
+  //   allExpenses: [],
+  //   allIncomes: []
+  // }
+
+  //  Decided on data structure
+  var data = {
+    allItems: {
+      exp: [],
+      inc: []
+    },
+    totals: {
+      exp: 0,
+      inc: 0
+    }
+  }
+
 })();
 
 // The UI Module
