@@ -1,24 +1,49 @@
 // THE MODULE PATTERN
-
-/*This is an immediate invoked func expression that returns an object. An IFFE allows use to have data privacy because it creates a new scope that is not visible from the outside scope. The module pattern return an obj containing all of the func that we want to be public. */
 var budgetController = (function(){
  
 })();
 
-/* Seperation of concerns each part of the app should work independently not knowing the others exist. */
+// The UI Module
 var UIController = (function(){
 
-  // Show Code
+  var DOMstrings = {
+    inputType: '.add__type',
+    inputDescription: '.add__description',
+    inputValue: '.add__value',
+    inputBtn: '.add__btn'
+  };
+
+  // This is a public function 
+  return {
+    getInput: function(){
+      return {
+        type: document.querySelector(DOMstrings.inputType).value, 
+        description: document.querySelector(DOMstrings.inputDescription).value,
+        value: document.querySelector(DOMstrings.inputValue).value
+      };
+    },
+    // Makes DOM string variables public
+    getDOMstrings: function() {
+      return DOMstrings;
+    }
+  };
 
 })();
 
+// GLOBAL APP CONTROLLER
 /** Will pass the other two modules as arguments so that it connect to both. */
 var controller = (function(budgetCtrl, UICtrl){
 
+  // var setupEventListeners = fucntion(){
+
+  // }
+
+  var DOM = UICtrl.getDOMstrings();
+
   var ctrlAddItem = function () {
-
     // 1. Get the field input data
-
+    var input = UICtrl.getInput();
+    console.log(input);
     // 2. Add the item to the budget controller
 
     // 3. Add the item to the the UI
@@ -30,12 +55,9 @@ var controller = (function(budgetCtrl, UICtrl){
   
   }
 
-  document.querySelector('.add__btn').addEventListener('click', ctrlAddItem);
+  document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
 
-  // on the windows object and will give it event object
   document.addEventListener('keypress', function (e) {
-    // console.log(e);
-
     // which is the keyCode for some browsers
     if(e.keyCode === 13 || e.which === 13){
         ctrlAddItem();      
