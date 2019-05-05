@@ -2,7 +2,6 @@
 //// THE MODULE PATTERN
 
 var budgetController = (function(){
-
   // Creating function constructors
   var Expense = function(id, description, value){
     this.id = id,
@@ -17,7 +16,7 @@ var budgetController = (function(){
     this.value = value
   };
 
-  //  Decided on this data structure
+  // Data Structure
   var data = {
     allItems: {
       exp: [],
@@ -36,7 +35,7 @@ var budgetController = (function(){
 
       // Create New ID
       // ID is the last item in the array
-      // First bracket is the array, second bracket is the index number. So it ends up being the last ID plus 1
+      // First bracket is the array, second bracket is the index number. So it ends up being the last ID plus 1. If its the first item we assign it 0.
       if(data.allItems[type].length > 0){
         ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
       } else {
@@ -70,7 +69,9 @@ var UIController = (function(){
     inputType: '.add__type',
     inputDescription: '.add__description',
     inputValue: '.add__value',
-    inputBtn: '.add__btn'
+    inputBtn: '.add__btn',
+    incomeContainer: '.income__list',
+    expenseContainer: '.expense__list'
   };
 
   // This is a public function 
@@ -82,6 +83,31 @@ var UIController = (function(){
         value: document.querySelector(DOMstrings.inputValue).value
       };
     },
+
+    addListItem: function(obj, type) {
+      var html, newHtml, element;
+      // Create HTML string with placeholder text
+      
+      if (type === 'inc') {
+          element = DOMstrings.incomeContainer;
+          
+          html = '<div class="item clearfix" id="inc-%id%"> <div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+      } else if (type === 'exp') {
+          element = DOMstrings.expensesContainer;
+          
+          html = '<div class="item clearfix" id="exp-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+      }
+      
+      // Replace the placeholder text with some actual data
+      newHtml = html.replace('%id%', obj.id);
+      newHtml = newHtml.replace('%description%', obj.description);
+      newHtml = newHtml.replace('%value%', obj.value);
+      
+      // Insert the HTML into the DOM
+      document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
+  },
+  
+
     // Makes DOM string variables public
     getDOMstrings: function() {
       return DOMstrings;
@@ -108,6 +134,7 @@ var controller = (function(budgetCtrl, UICtrl){
   };
 
 
+  // Control center of the application
   var ctrlAddItem = function () {
     var input, newItem;
     // 1. Get the field input data
@@ -115,7 +142,7 @@ var controller = (function(budgetCtrl, UICtrl){
     // 2. Add the item to the budget controller
     newItem = budgetCtrl.addItem(input.type, input.description, input.value);
     // 3. Add the item to the the UI
-
+    UICtrl.addListItem(newItem, input.type);
     // 4. Calculate the budget
 
     // 5.Display the budget to the UI  
