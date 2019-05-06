@@ -105,8 +105,24 @@ var UIController = (function(){
       
       // Insert the HTML into the DOM
       document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
-  },
-  
+    },
+
+    clearFields: function(){
+      var fields, fieldsArray;
+
+      // querySelectorAll gives data back in the a list not an array, so I am going to convert it into an array. Slice will return a copy of an array.
+      fields = document.querySelectorAll(`${DOMstrings.inputDescription}, ${DOMstrings.inputValue}`);
+
+      fieldsArray = Array.prototype.slice.call(fields);
+
+      fieldsArray.forEach((field, index, array) => {
+        field.value = "";
+      });
+
+      // highlights the dsecription box after clearing the fields
+      fieldsArray[0].focus();
+
+    },
 
     // Makes DOM string variables public
     getDOMstrings: function() {
@@ -143,7 +159,9 @@ var controller = (function(budgetCtrl, UICtrl){
     newItem = budgetCtrl.addItem(input.type, input.description, input.value);
     // 3. Add the item to the the UI
     UICtrl.addListItem(newItem, input.type);
-    // 4. Calculate the budget
+    // 4. Clear the fields
+    UICtrl.clearFields();
+    // 5. Calculate the budget
 
     // 5.Display the budget to the UI  
   };
