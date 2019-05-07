@@ -71,6 +71,22 @@ var budgetController = (function(){
       return newItem;
     },
 
+    deleteItem: function(type, id){
+      let ids, index;
+      // map returns a brand new array with all the ids in either the income or expenses array in 'data'. Here we are selected the one item that matches our ID.
+      ids = data.allItems[type].map(function(item){
+        return item.id;
+      });
+
+      // this will say ok out of the new array we just created give us the one that matches the index.
+      index = ids.indexOf(id);
+
+      //  Delete from array - splice() used to remove elements. First arg is position where we start deleting. Second arg is the num we want to delete.
+      if(index !== -1){
+        data.allItems[type].splice(index, 1);
+      }
+    },
+
     calculateBudget: function(){
       // calculate total income and expense
       calculateTotal('exp');
@@ -249,12 +265,10 @@ var controller = (function(budgetCtrl, UICtrl){
       // inc-1
       splitID = itemID.split('-');
       type = splitID[0];
-      ID = splitID[1];
-      console.log('====================================');
-    console.log(type, ID);
-    console.log('====================================');
+      // this is still a string so I must convert it to a integer using paresInt
+      ID = parseInt(splitID[1]);
       // 1. delete item from data structure
-
+      budgetCtrl.deleteItem(type, ID);
       // 2. Delete the item from the UI
 
       // 3. Update and show the new budget
