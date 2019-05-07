@@ -173,20 +173,20 @@ var UIController = (function(){
 
     displayBudget: function(obj) {
       document.querySelector(DOMstrings.budgetLabel).textContent = obj.budget;
-
       document.querySelector(DOMstrings.incomeLabel).textContent = obj.totalInc;
-
       document.querySelector(DOMstrings.expensesLabel).textContent = obj.totalExp;
-
-      document.querySelector(DOMstrings.percentageLabel).textContent = obj.percentage;
+      
+      if(obj.percentage > 0){
+        document.querySelector(DOMstrings.percentageLabel).textContent = obj.percentage + '%';
+      } else {
+        document.querySelector(DOMstrings.percentageLabel).textContent = '---';
+      }
     },
-
     // Makes DOM string variables public
     getDOMstrings: function() {
       return DOMstrings;
     }
   };
-
 })();
 
 /*----------------------------------------- */
@@ -197,9 +197,7 @@ var controller = (function(budgetCtrl, UICtrl){
 
   var setupEventListeners = function(){
     var DOM = UICtrl.getDOMstrings();
-
     document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
-
     document.addEventListener('keypress', function (e) {
       // 'which' is the keyCode for some browsers
       if(e.keyCode === 13 || e.which === 13){
@@ -233,12 +231,17 @@ var controller = (function(budgetCtrl, UICtrl){
       // 5. Calculate and update budget
       updateBudget();
     }
-   
   };
 
   return {
     init: function(){
       console.log('App Started!');
+      UICtrl.displayBudget({
+        budget: 0,
+        totalInc: 0,
+        totalExp: 0,
+        percentage: -1
+      });
       setupEventListeners();
     }
   };
