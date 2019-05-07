@@ -5,12 +5,25 @@
 /*----------------------------------------- */
 //          budgetController                //
 /*----------------------------------------- */
-var budgetController = (function(){
+const budgetController = (function(){
   // Creating function constructors
   var Expense = function(id, description, value){
     this.id = id,
     this.description = description,
-    this.value = value
+    this.value = value,
+    this.percentage = -1
+  };
+
+  Expense.prototype.calculatePercentages = function(totalInc){
+    if(totalInc > 0){
+      this.percentage = Math.round((this.value / totalInc) * 100);
+    } else {
+      this.percentage = -1;
+    }
+  };
+
+  Expense.prototype.getPercentage = function(){
+    return this.percentage;
   };
 
   // Income Constructor
@@ -102,6 +115,30 @@ var budgetController = (function(){
       }
     },
 
+    calculatePercentages: function(){
+      /*
+        a=20
+        b=10
+        c=40
+        income=100
+        a=20/100=20%
+        b=10/100=10%
+        c=40/100=40%
+      */
+
+      // Calculates the percentage for each item in the expenses array
+      data.allItems.exp.forEach(function(item){
+        item.calculatePercentages(data.totals.inc);
+      });
+    },
+
+    getPercentages: function(){
+      let allPercentages = data.allItems.exp.map(function(item){
+        return item.getPercentage();
+      });
+      return allPercentages;
+    },
+
     getBudget: function(){
       return {
         budget: data.budget,
@@ -121,7 +158,7 @@ var budgetController = (function(){
 /*----------------------------------------- */
 //          UIController                    //
 /*----------------------------------------- */
-var UIController = (function(){
+const UIController = (function(){
 
   var DOMstrings = {
       inputType: '.add__type',
@@ -217,7 +254,7 @@ var UIController = (function(){
 //         GLOBAL APP CONTROLLER            // 
 /*----------------------------------------- */
 /** Will pass the other two modules as arguments so that it connect to both. */
-var controller = (function(budgetCtrl, UICtrl){
+const controller = (function(budgetCtrl, UICtrl){
 
   var setupEventListeners = function(){
     var DOM = UICtrl.getDOMstrings();
@@ -243,6 +280,17 @@ var controller = (function(budgetCtrl, UICtrl){
     UICtrl.displayBudget(budget);
   };
 
+  let updatePercentages = function(){
+    // 1. Calculate the percentages
+    budgetCtrl.calculatePercentages();
+    // 2. Read percentages from the budgetController
+    let percentages = budgetCtrl.getPercentages();
+    // 3. Update the UI with the new percentages
+    console.log(percentages);
+    
+
+  };
+
   // Control center of the application
   var ctrlAddItem = function () {
     var input, newItem;
@@ -258,6 +306,8 @@ var controller = (function(budgetCtrl, UICtrl){
       UICtrl.clearFields();
       // 5. Calculate and update budget
       updateBudget();
+      // 6. Calculate and update the percentages
+      updatePercentages();
     }
   };
 
@@ -279,6 +329,8 @@ var controller = (function(budgetCtrl, UICtrl){
       UICtrl.deleteListItem(itemID);
       // 3. Update and show the new budget
       updateBudget();
+      // 4. Calculate and update the percentages
+      updatePercentages();
     }
   };
 
