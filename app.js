@@ -1,6 +1,10 @@
 /////////////////////////////////////////////
-//// THE MODULE PATTERN
+////         THE MODULE PATTERN            //
+/////////////////////////////////////////////
 
+/*----------------------------------------- */
+//          budgetController                //
+/*----------------------------------------- */
 var budgetController = (function(){
   // Creating function constructors
   var Expense = function(id, description, value){
@@ -16,6 +20,16 @@ var budgetController = (function(){
     this.value = value
   };
 
+  var calculateTotal = function(type){
+    var sum = 0;
+
+    data.allItems[type].forEach(function(currentElement) {
+      sum += currentElement.value;
+    });
+
+    data.totals[type] = sum;
+  };
+
   // Data Structure
   var data = {
     allItems: {
@@ -25,14 +39,16 @@ var budgetController = (function(){
     totals: {
       exp: 0,
       inc: 0
-    }
+    },
+    budget: 0,
+    // set it to -1 so it doesnt exist inititally
+    percentage: -1
   };
 
   // Public methods
   return {
     addItem: function(type, des, val){
       var newItem, ID;
-
       // Create New ID
       // ID is the last item in the array
       // First bracket is the array, second bracket is the index number. So it ends up being the last ID plus 1. If its the first item we assign it 0.
@@ -55,6 +71,30 @@ var budgetController = (function(){
       return newItem;
     },
 
+    calculateBudget: function(){
+      // calculate total income and expense
+      calculateTotal('exp');
+      calculateTotal('inc');
+      // calculate the budget  income - expenses
+      data.budget = data.totals.inc - data.totals.exp;
+      // calculate the percentage of income that we spent
+      if(data.totals.inc > 0){
+        data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100)
+      } else {
+        // when no percentages to calculate we assign -1
+        data.percentage = -1
+      }
+    },
+
+    getBudget: function(){
+      return {
+        budget: data.budget,
+        totalInc: data.totals.inc,
+        totalExp: data.totals.exp,
+        percentage: data.percentage
+      };
+    },
+
     testing: function(){
       console.log(data);
     }
@@ -62,7 +102,9 @@ var budgetController = (function(){
 
 })();
 
-// The UI Module
+/*----------------------------------------- */
+//          UIController                    //
+/*----------------------------------------- */
 var UIController = (function(){
 
   var DOMstrings = {
@@ -133,7 +175,9 @@ var UIController = (function(){
 
 })();
 
-// GLOBAL APP CONTROLLER
+/*----------------------------------------- */
+//         GLOBAL APP CONTROLLER            // 
+/*----------------------------------------- */
 /** Will pass the other two modules as arguments so that it connect to both. */
 var controller = (function(budgetCtrl, UICtrl){
 
@@ -152,10 +196,11 @@ var controller = (function(budgetCtrl, UICtrl){
 
   var updateBudget = function(){
      // 1. Calculate the budget
-
+    budgetCtrl.calculateBudget();
      //  2 return the budget
-
+    var budget = budgetCtrl.getBudget();
     // 3.Display the budget to the UI  
+    console.log(budget);
   };
 
   // Control center of the application
