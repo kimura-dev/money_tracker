@@ -117,7 +117,8 @@ var UIController = (function(){
       budgetLabel: '.budget__value',
       incomeLabel: '.budget__income--value',
       expensesLabel: '.budget__expenses--value',
-      percentageLabel: '.budget__expenses--percentage'
+      percentageLabel: '.budget__expenses--percentage',
+      container: '.container'
   };
 
   // This is a public function 
@@ -187,6 +188,7 @@ var UIController = (function(){
       return DOMstrings;
     }
   };
+
 })();
 
 /*----------------------------------------- */
@@ -197,13 +199,17 @@ var controller = (function(budgetCtrl, UICtrl){
 
   var setupEventListeners = function(){
     var DOM = UICtrl.getDOMstrings();
+
     document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
+
     document.addEventListener('keypress', function (e) {
       // 'which' is the keyCode for some browsers
       if(e.keyCode === 13 || e.which === 13){
           ctrlAddItem();      
       }
     });
+
+    document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
   };
 
   var updateBudget = function(){
@@ -230,6 +236,28 @@ var controller = (function(budgetCtrl, UICtrl){
       UICtrl.clearFields();
       // 5. Calculate and update budget
       updateBudget();
+    }
+  };
+
+  var ctrlDeleteItem = function(e){
+    var itemID, splitID, type, ID;
+
+    itemID = e.target.parentNode.parentNode.parentNode.parentNode.id;
+    
+
+    if(itemID){
+      // inc-1
+      splitID = itemID.split('-');
+      type = splitID[0];
+      ID = splitID[1];
+      console.log('====================================');
+    console.log(type, ID);
+    console.log('====================================');
+      // 1. delete item from data structure
+
+      // 2. Delete the item from the UI
+
+      // 3. Update and show the new budget
     }
   };
 
