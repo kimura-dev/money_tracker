@@ -171,7 +171,8 @@ const UIController = (function(){
       incomeLabel: '.budget__income--value',
       expensesLabel: '.budget__expenses--value',
       percentageLabel: '.budget__expenses--percentage',
-      container: '.container'
+      container: '.container',
+      expensesPercentageLabel: '.item__percentage'
   };
 
   // This is a public function 
@@ -242,6 +243,27 @@ const UIController = (function(){
         document.querySelector(DOMstrings.percentageLabel).textContent = '---';
       }
     },
+
+    displayPercentages: function(percentages){
+      // This creates a nodeList - which means it does not have acces to array methods.
+      let fields = document.querySelectorAll(DOMstrings.expensesPercentageLabel);
+
+      let nodeListForEach = function(nodeList, callback){
+        for (let i = 0; i < nodeList.length; i++){
+          callback(nodeList[i], i);
+        }
+      };
+
+      nodeListForEach(fields, function(item, index){
+        // some code
+        if(percentages[index] > 0){
+          item.textContent = percentages[index] + '%';
+        } else {
+          item.textContent = '---';
+        }
+
+      });
+    },
     // Makes DOM string variables public
     getDOMstrings: function() {
       return DOMstrings;
@@ -286,9 +308,7 @@ const controller = (function(budgetCtrl, UICtrl){
     // 2. Read percentages from the budgetController
     let percentages = budgetCtrl.getPercentages();
     // 3. Update the UI with the new percentages
-    console.log(percentages);
-    
-
+    UICtrl.displayPercentages(percentages);
   };
 
   // Control center of the application
