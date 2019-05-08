@@ -204,6 +204,12 @@ const UIController = (function(){
     return `${type === 'exp' ? sign = '-' : '+'} ${int} . ${dec}`;
   };
 
+  let nodeListForEach = function(nodeList, callback){
+    for (let i = 0; i < nodeList.length; i++){
+      callback(nodeList[i], i);
+    }
+  };
+
   // This is a public function 
   return {
     getInput: function(){
@@ -281,12 +287,6 @@ const UIController = (function(){
       // This creates a nodeList - which means it does not have acces to array methods.
       let fields = document.querySelectorAll(DOMstrings.expensesPercentageLabel);
 
-      let nodeListForEach = function(nodeList, callback){
-        for (let i = 0; i < nodeList.length; i++){
-          callback(nodeList[i], i);
-        }
-      };
-
       nodeListForEach(fields, function(item, index){
         // some code
         if(percentages[index] > 0){
@@ -305,6 +305,19 @@ const UIController = (function(){
         month = now.getMonth();
         year = now.getFullYear();
         document.querySelector(DOMstrings.dateLabel).textContent = `${months[month]} ${year}`;
+    },
+
+    changedType: function(){
+      // This returns another nodeList
+      let fields = document.querySelectorAll(
+        `${DOMstrings.inputType}, ${DOMstrings.inputDescription}, ${DOMstrings.inputValue}`
+      );
+      nodeListForEach(fields, function(item){
+        item.classList.toggle('red-focus');
+      });
+
+      document.querySelector(DOMstrings.inputBtn).classList.toggle('red');
+
     },
 
     // Makes DOM string variables public
@@ -334,6 +347,8 @@ const controller = (function(budgetCtrl, UICtrl){
     });
 
     document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
+
+    document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changedType);
   };
 
   var updateBudget = function(){
