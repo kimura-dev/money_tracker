@@ -7,7 +7,7 @@
 /*----------------------------------------- */
 const budgetController = (function(){
   // Creating function constructors
-  var Expense = function(id, description, value){
+  const Expense = function(id, description, value){
     this.id = id,
     this.description = description,
     this.value = value,
@@ -27,13 +27,13 @@ const budgetController = (function(){
   };
 
   // Income Constructor
-  var Income = function(id, description, value){
+  const Income = function(id, description, value){
     this.id = id,
     this.description = description,
     this.value = value
   };
 
-  var calculateTotal = function(type){
+  const calculateTotal = function(type){
     var sum = 0;
 
     data.allItems[type].forEach(function(currentElement) {
@@ -44,7 +44,7 @@ const budgetController = (function(){
   };
 
   // Data Structure
-  var data = {
+  const data = {
     allItems: {
       exp: [],
       inc: []
@@ -61,7 +61,7 @@ const budgetController = (function(){
   // Public methods
   return {
     addItem: function(type, des, val){
-      var newItem, ID;
+      let newItem, ID;
       // Create New ID
       // ID is the last item in the array
       // First bracket is the array, second bracket is the index number. So it ends up being the last ID plus 1. If its the first item we assign it 0.
@@ -160,7 +160,7 @@ const budgetController = (function(){
 /*----------------------------------------- */
 const UIController = (function(){
 
-  var DOMstrings = {
+  const DOMstrings = {
       inputType: '.add__type',
       inputDescription: '.add__description',
       inputValue: '.add__value',
@@ -176,8 +176,8 @@ const UIController = (function(){
       dateLabel: '.budget__title--month'
   };
 
-  var formatNumber = function(num, type){
-    var numSplit, int, dec, type;
+  const formatNumber = function(num, type){
+    let numSplit, int, dec;
       /*
         + or - before number
         exactly 2 decimal points
@@ -204,7 +204,7 @@ const UIController = (function(){
     return `${type === 'exp' ? sign = '-' : '+'} ${int} . ${dec}`;
   };
 
-  let nodeListForEach = function(nodeList, callback){
+  const nodeListForEach = function(nodeList, callback){
     for (let i = 0; i < nodeList.length; i++){
       callback(nodeList[i], i);
     }
@@ -222,7 +222,7 @@ const UIController = (function(){
     },
 
     addListItem: function(obj, type) {
-      var html, newHtml, element;
+      let html, newHtml, element;
       // Create HTML string with placeholder text
       
       if (type === 'inc') {
@@ -251,7 +251,7 @@ const UIController = (function(){
     },
 
     clearFields: function(){
-      var fields, fieldsArray;
+      let fields, fieldsArray;
 
       // querySelectorAll gives data back in the a list not an array, so I am going to convert it into an array. Slice will return a copy of an array.
       fields = document.querySelectorAll(`${DOMstrings.inputDescription}, ${DOMstrings.inputValue}`);
@@ -268,7 +268,7 @@ const UIController = (function(){
     },
 
     displayBudget: function(obj) {
-      var type;
+      let type;
 
       obj.budget > 0 ? type = 'inc' : type = 'exp';
 
@@ -299,7 +299,7 @@ const UIController = (function(){
     },
 
     displayDate: function(){
-      var now, month, year;
+      let now, month, year;
         now = new Date();
         months = ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'Decemeber'];
         month = now.getMonth();
@@ -334,8 +334,8 @@ const UIController = (function(){
 /** Will pass the other two modules as arguments so that it connect to both. */
 const controller = (function(budgetCtrl, UICtrl){
 
-  var setupEventListeners = function(){
-    var DOM = UICtrl.getDOMstrings();
+  const setupEventListeners = function(){
+    let DOM = UICtrl.getDOMstrings();
 
     document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
 
@@ -351,7 +351,7 @@ const controller = (function(budgetCtrl, UICtrl){
     document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changedType);
   };
 
-  var updateBudget = function(){
+  const updateBudget = function(){
      // 1. Calculate the budget
     budgetCtrl.calculateBudget();
      //  2 return the budget
@@ -360,7 +360,7 @@ const controller = (function(budgetCtrl, UICtrl){
     UICtrl.displayBudget(budget);
   };
 
-  let updatePercentages = function(){
+  const updatePercentages = function(){
     // 1. Calculate the percentages
     budgetCtrl.calculatePercentages();
     // 2. Read percentages from the budgetController
@@ -370,8 +370,8 @@ const controller = (function(budgetCtrl, UICtrl){
   };
 
   // Control center of the application
-  var ctrlAddItem = function () {
-    var input, newItem;
+  const ctrlAddItem = function () {
+    let input, newItem;
     // 1. Get the field input data
     input = UICtrl.getInput();
 
@@ -389,8 +389,8 @@ const controller = (function(budgetCtrl, UICtrl){
     }
   };
 
-  var ctrlDeleteItem = function(e){
-    var itemID, splitID, type, ID;
+  const ctrlDeleteItem = function(e){
+    let itemID, splitID, type, ID;
 
     itemID = e.target.parentNode.parentNode.parentNode.parentNode.id;
     
@@ -414,7 +414,7 @@ const controller = (function(budgetCtrl, UICtrl){
 
   return {
     init: function(){
-      console.log('App Started!');
+      console.log('Application started successfully!');
       UICtrl.displayDate();
       UICtrl.displayBudget({
         budget: 0,
